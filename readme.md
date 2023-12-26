@@ -243,3 +243,94 @@ Q10. how many users have a phone number starting with '+1 (940)'?
   }
 ]
 ```
+
+Q11. who has registered the most recently?
+
+```json
+[
+  // Sort the documents in descending order based on the 'registered' field.
+  {
+    "$sort": {
+      "registered": -1,
+    },
+  },
+  // Limit the result set to the first 2 documents after sorting.
+  {
+    "$limit": 2,
+  },
+  // Project only specific fields ('name', 'registered', 'favoriteFruit') in the output.
+  {
+    "$project": {
+      "name": 1,
+      "registered": 1,
+      "favoriteFruit": 1
+    }
+  },
+]
+
+```
+
+Q12. Categorize user based on favorite fruits?
+
+```json
+[
+  // Group documents by 'favoriteFruit', and create an array 'users' with corresponding 'name' values.
+  {
+    "$group": {
+      "_id": "$favoriteFruit",
+      "users": {
+        "$push": "$name",
+      },
+    },
+  },
+  // Add a new field 'count' with the size of the 'users' array using $size operator.
+  {
+    "$addFields": {
+      "count": { "$size": "$users" } // Calculate the size of the 'users' array.
+    }
+  }
+]
+
+```
+
+Q13. how many users has tag "ad" as 2 second value?
+
+```json
+[
+  {
+    "$match" : {
+       "tags.1": "ad"
+    } 
+  }
+]
+```
+
+Q14. find users who has both enim and id as their tags?
+
+```json
+[
+  {
+    "$match": {
+      "tags": { "$all" : ["enim", "id"] }
+    },
+  },
+]
+```
+
+Q15. List all the companies located in the USA with their corresponding user account?
+
+```json
+[
+  {
+    "$match": {
+      "company.location.country": "USA",
+    },
+  },
+  {
+    "$group": {
+      "_id": "$company.title",
+      "userCount": { "$sum": 1 },
+    },
+  },
+]
+```
