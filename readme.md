@@ -544,6 +544,42 @@ db.products.aggregate([
 
 ```
 
+> $size
+
+The $size operator is used in the aggregation pipeline to determine the number of elements in an array. When applied in the aggregation pipeline, it returns the size of the specified array.
+
+```javascript
+// data
+
+{
+  "_id": 1,
+  "items": ["item1", "item2", "item3"]
+}
+```
+
+```json
+// query
+
+db.orders.aggregate([
+  {
+    $project: {
+      _id: 1,
+      numberOfItems: { $size: "$items" }
+    }
+  }
+])
+```
+
+```json
+// result
+
+{
+  "_id": 1,
+  "numberOfItems": 3
+}
+```
+
+
 * TIPS
 
 1) Always think TWICE when you are using operators like "$unwind' because it is very costly operator because it creates multiple copies of a same documents. Try to think some other possible solution. Some costly operators are: "$lookup", "$unwind", "$facet", etc.
